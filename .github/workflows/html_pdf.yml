@@ -49,7 +49,7 @@ jobs:
           git clone -b docs https://${{ secrets.UNWRAPCAMERATOKEN }}@github.com/Bertz-TII/Unwrap-Camera.git
 
           python -m pip install --upgrade pip
-          cd UnwrapCamera/docs
+          cd Unwrap-Camera/docs
           ls
           pip install -r requirements.txt
 
@@ -58,7 +58,7 @@ jobs:
         run: |
           # sudo apt-get install texlive-extra-utils
           
-          cd UnwrapCamera/docs/source
+          cd Unwrap-Camera/docs/source
           
           sphinx-build -E -b latex -D language=en -D latex_engine=lualatex . ../_build/tex_en
           # sphinx-build -E -b latex -D language=ja -D latex_engine=uplatex . ../_build/tex_ja
@@ -66,7 +66,7 @@ jobs:
       - uses: xu-cheng/texlive-action@v3
         with:
             run: |
-                cd UnwrapCamera/docs/_build/tex_en
+                cd Unwrap-Camera/docs/_build/tex_en
                 export XINDYOPTS="-L english -C utf8  -M sphinx.xdy"
                 latexmk -pdf -dvi- -ps-
                 mv unwrapcamera.pdf ../unwrapcamera_en.pdf
@@ -79,14 +79,14 @@ jobs:
         # Outputs to the './_site' directory by default
         run: |
           ls
-          cd UnwrapCamera/docs
+          cd Unwrap-Camera/docs
           python build_html_pdf.py
 
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v5
         with:
-          path: UnwrapCamera/docs/_build/html
+          path: Unwrap-Camera/docs/_build/html
 
   # Deployment job
   deploy:
