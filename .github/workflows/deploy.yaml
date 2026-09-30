@@ -43,8 +43,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Clone Docs
         run: |
-          # GIT_LFS_SKIP_SMUDGE=1 git clone -b documentation --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN  }}@github.com/Bertz-TII/ARCOptix
-          git clone -b documentation --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN  }}@github.com/Bertz-TII/Unwrap-Camera
+          # GIT_LFS_SKIP_SMUDGE=1 git clone -b docs --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN  }}@github.com/Bertz-TII/ARCOptix
+          git clone -b docs --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN  }}@github.com/Bertz-TII/Unwrap-Camera
 
           python -m pip install --upgrade pip
           cd Unwrap-Camera/docs
