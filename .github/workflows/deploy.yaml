@@ -40,7 +40,7 @@ jobs:
           # cache: 'pip'
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Clone Docs
         run: |
           # GIT_LFS_SKIP_SMUDGE=1 git clone -b docs --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN  }}@github.com/Bertz-TII/ARCOptix
