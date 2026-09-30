@@ -1,0 +1,101 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy HTML including PDF site to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  # push:
+  #   branches: ["main"]
+  # pull_request:
+  #   branches:
+  #     - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
+          # cache: 'pip'
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v6
+      - name: Clone Docs
+        run: |
+          # GIT_LFS_SKIP_SMUDGE=1 git clone -b docs --depth 1 https://${{ secrets.UNWRAPCAMERATOKEN }}@github.com/Bertz-TII/Unwrap-Camera.git
+          git clone -b docs https://${{ secrets.UNWRAPCAMERATOKEN }}@github.com/Bertz-TII/Unwrap-Camera.git
+
+          python -m pip install --upgrade pip
+          cd UnwrapCamera/docs
+          ls
+          pip install -r requirements.txt
+
+          
+      - name: build_tex
+        run: |
+          # sudo apt-get install texlive-extra-utils
+          
+          cd UnwrapCamera/docs/source
+          
+          sphinx-build -E -b latex -D language=en -D latex_engine=lualatex . ../_build/tex_en
+          # sphinx-build -E -b latex -D language=ja -D latex_engine=uplatex . ../_build/tex_ja
+
+      - uses: xu-cheng/texlive-action@v3
+        with:
+            run: |
+                cd UnwrapCamera/docs/_build/tex_en
+                export XINDYOPTS="-L english -C utf8  -M sphinx.xdy"
+                latexmk -pdf -dvi- -ps-
+                mv unwrapcamera.pdf ../unwrapcamera_en.pdf
+                # cd ../tex_ja
+                # export XINDYOPTS=""
+                # latexmk -r latexmkjarc -pdfdvi -dvi- -ps-
+                # mv unwrapcamera.pdf ../unwrapcamera_ja.pdf
+
+      - name: Build HTML
+        # Outputs to the './_site' directory by default
+        run: |
+          ls
+          cd UnwrapCamera/docs
+          python build_html_pdf.py
+
+      - name: Upload artifact
+        # Automatically uploads an artifact from the './_site' directory by default
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: UnwrapCamera/docs/_build/html
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
