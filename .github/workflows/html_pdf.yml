@@ -57,7 +57,7 @@ jobs:
       - name: build_tex
         run: |
           # sudo apt-get install texlive-extra-utils
-          
+          npm install -g @mermaid-js/mermaid-cli
           cd Unwrap-Camera/docs/source
           
           sphinx-build -E -b latex -D language=en -D latex_engine=lualatex . ../_build/tex_en
